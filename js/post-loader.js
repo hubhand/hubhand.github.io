@@ -4,12 +4,12 @@
  */
 
 (function () {
-  'use strict';
+  "use strict";
 
   // URL에서 파일명 가져오기
   function getFileFromUrl() {
     const params = new URLSearchParams(window.location.search);
-    return params.get('file');
+    return params.get("file");
   }
 
   // Front Matter 파싱
@@ -34,7 +34,7 @@
     // Front Matter 라인 파싱
     const lines = frontMatter.split(/\r?\n/);
     lines.forEach((line) => {
-      const colonIndex = line.indexOf(':');
+      const colonIndex = line.indexOf(":");
       if (colonIndex > 0) {
         const key = line.substring(0, colonIndex).trim();
         let value = line.substring(colonIndex + 1).trim();
@@ -48,14 +48,14 @@
         }
 
         // 배열 파싱 (tags)
-        if (key === 'tags' && value.startsWith('[') && value.endsWith(']')) {
+        if (key === "tags" && value.startsWith("[") && value.endsWith("]")) {
           try {
             value = JSON.parse(value);
           } catch {
             value = value
               .slice(1, -1)
-              .split(',')
-              .map((tag) => tag.trim().replace(/^['"]|['"]$/g, ''));
+              .split(",")
+              .map((tag) => tag.trim().replace(/^['"]|['"]$/g, ""));
           }
         }
 
@@ -68,8 +68,8 @@
 
   // marked.js 설정
   function configureMarked() {
-    if (typeof marked === 'undefined') {
-      console.error('marked.js가 로드되지 않았습니다.');
+    if (typeof marked === "undefined") {
+      console.error("marked.js가 로드되지 않았습니다.");
       return;
     }
 
@@ -83,13 +83,13 @@
 
   // 게시글 헤더 렌더링
   function renderPostHeader(metadata) {
-    const titleEl = document.getElementById('postTitle');
-    const metaEl = document.getElementById('postMeta');
-    const tagsEl = document.getElementById('postTags');
+    const titleEl = document.getElementById("postTitle");
+    const metaEl = document.getElementById("postMeta");
+    const tagsEl = document.getElementById("postTags");
 
     if (titleEl) {
-      titleEl.textContent = metadata.title || '제목 없음';
-      document.title = `${metadata.title || '게시글'} | hubhand's Blog`;
+      titleEl.textContent = metadata.title || "제목 없음";
+      document.title = `${metadata.title || "게시글"} | hubhand's Blog`;
     }
 
     if (metaEl) {
@@ -97,10 +97,10 @@
 
       if (metadata.date) {
         const date = new Date(metadata.date);
-        const formattedDate = date.toLocaleDateString('ko-KR', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
+        const formattedDate = date.toLocaleDateString("ko-KR", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
         });
         metaItems.push(`<span class="post-meta-item">${formattedDate}</span>`);
       }
@@ -111,19 +111,19 @@
         );
       }
 
-      metaEl.innerHTML = metaItems.join('<span>•</span>');
+      metaEl.innerHTML = metaItems.join("<span>•</span>");
     }
 
     if (tagsEl && Array.isArray(metadata.tags) && metadata.tags.length > 0) {
       tagsEl.innerHTML = metadata.tags
         .map((tag) => `<span class="post-tag">${escapeHtml(tag)}</span>`)
-        .join('');
+        .join("");
     }
   }
 
   // 게시글 콘텐츠 렌더링
   function renderPostContent(content) {
-    const contentEl = document.getElementById('postContent');
+    const contentEl = document.getElementById("postContent");
     if (!contentEl) return;
 
     try {
@@ -131,11 +131,11 @@
       contentEl.innerHTML = html;
 
       // Prism.js로 코드 하이라이팅
-      if (typeof Prism !== 'undefined') {
+      if (typeof Prism !== "undefined") {
         Prism.highlightAllUnder(contentEl);
       }
     } catch (error) {
-      console.error('마크다운 파싱 오류:', error);
+      console.error("마크다운 파싱 오류:", error);
       contentEl.innerHTML = `
         <div class="error-state">
           <p>게시글을 렌더링하는 데 문제가 발생했습니다.</p>
@@ -146,30 +146,30 @@
 
   // Giscus 댓글 로드
   function loadGiscus() {
-    const container = document.getElementById('giscusContainer');
+    const container = document.getElementById("giscusContainer");
     if (!container) return;
 
-    const script = document.createElement('script');
-    script.src = 'https://giscus.app/client.js';
-    script.setAttribute('data-repo', 'hubhand/hubhand.github.io');
-    script.setAttribute('data-repo-id', 'YOUR_REPO_ID'); // Giscus 설정에서 가져와야 함
-    script.setAttribute('data-category', 'General');
-    script.setAttribute('data-category-id', 'YOUR_CATEGORY_ID'); // Giscus 설정에서 가져와야 함
-    script.setAttribute('data-mapping', 'pathname');
-    script.setAttribute('data-strict', '0');
-    script.setAttribute('data-reactions-enabled', '1');
-    script.setAttribute('data-emit-metadata', '1');
-    script.setAttribute('data-input-position', 'top');
-    script.setAttribute('data-lang', 'ko');
-    script.setAttribute('crossorigin', 'anonymous');
+    const script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.setAttribute("data-repo", "hubhand/hubhand.github.io");
+    script.setAttribute("data-repo-id", "R_kgDOQec2EA"); // Giscus 설정에서 가져와야 함
+    script.setAttribute("data-category", "General");
+    script.setAttribute("data-category-id", "DIC_kwDOQec2EM4CzIzE"); // Giscus 설정에서 가져와야 함
+    script.setAttribute("data-mapping", "pathname");
+    script.setAttribute("data-strict", "0");
+    script.setAttribute("data-reactions-enabled", "1");
+    script.setAttribute("data-emit-metadata", "1");
+    script.setAttribute("data-input-position", "top");
+    script.setAttribute("data-lang", "ko");
+    script.setAttribute("crossorigin", "anonymous");
     script.async = true;
 
     // 현재 테마에 맞게 Giscus 테마 설정
     const currentTheme =
-      document.documentElement.getAttribute('data-theme') || 'light';
+      document.documentElement.getAttribute("data-theme") || "light";
     script.setAttribute(
-      'data-theme',
-      currentTheme === 'dark' ? 'dark' : 'light'
+      "data-theme",
+      currentTheme === "dark" ? "dark" : "light"
     );
 
     container.appendChild(script);
@@ -177,19 +177,19 @@
 
   // HTML 이스케이프
   function escapeHtml(text) {
-    const div = document.createElement('div');
+    const div = document.createElement("div");
     div.textContent = text;
     return div.innerHTML;
   }
 
   // 에러 표시
   function showError(message) {
-    const contentEl = document.getElementById('postContent');
-    const titleEl = document.getElementById('postTitle');
+    const contentEl = document.getElementById("postContent");
+    const titleEl = document.getElementById("postTitle");
 
     if (titleEl) {
-      titleEl.textContent = '오류';
-      document.title = '오류 | hubhand\'s Blog';
+      titleEl.textContent = "오류";
+      document.title = "오류 | hubhand's Blog";
     }
 
     if (contentEl) {
@@ -212,7 +212,7 @@
     const filename = getFileFromUrl();
 
     if (!filename) {
-      showError('게시글을 찾을 수 없습니다.');
+      showError("게시글을 찾을 수 없습니다.");
       return;
     }
 
@@ -220,7 +220,7 @@
       const response = await fetch(`pages/${filename}`);
 
       if (!response.ok) {
-        throw new Error('게시글을 불러올 수 없습니다.');
+        throw new Error("게시글을 불러올 수 없습니다.");
       }
 
       const rawContent = await response.text();
@@ -236,8 +236,8 @@
       // Giscus 로드
       loadGiscus();
     } catch (error) {
-      console.error('Error loading post:', error);
-      showError('게시글을 불러오는 데 실패했습니다.');
+      console.error("Error loading post:", error);
+      showError("게시글을 불러오는 데 실패했습니다.");
     }
   }
 
@@ -247,10 +247,9 @@
   }
 
   // DOM 로드 후 초기화
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
   }
 })();
-
